@@ -1,12 +1,291 @@
-<div id="welcomeBanner" style="background-color: #007BFF; color: white; padding: 10px;">
-    <h2>Welcome, John!</h2>
-    <p>Don't miss our <span style="color: red; font-weight: bold;">special summer offer</span> today!</p>
-    <p class="highlight">Stay tuned for local events and more.</p>
-</div>
+<!DOCTYPE html>
+<html lang="en">
 
-<style>
-    .highlight {
-        background-color: yellow;
-        padding: 4px;
-    }
-</style>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Local Community Event Portal</title>
+    <style>
+        /* Base styles */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .highlight {
+            background-color: yellow;
+            padding: 4px;
+        }
+
+        /* Image Gallery styles */
+        .event-gallery {
+            margin: 20px 0;
+        }
+
+        .event-image {
+            border: 2px solid #ddd;
+            padding: 5px;
+            width: 200px;
+            height: 150px;
+        }
+
+        /* Form styles */
+        form {
+            max-width: 600px;
+            margin: 20px 0;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        input,
+        select,
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+        }
+
+        /* Video styles */
+        #promoVideo {
+            max-width: 100%;
+            margin: 20px 0;
+        }
+
+        /* Location styles */
+        #locationInfo {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Navigation Section -->
+    <nav>
+        <a href="#home">Home</a>
+        <a href="#events">Events</a>
+        <a href="#contact">Contact</a>
+        <a href="help.html" target="_blank">Help</a>
+    </nav>
+
+    <!-- Welcome Banner Section -->
+    <div id="welcomeBanner">
+        <h2>Welcome, John!</h2>
+        <p>Don't miss our <span style="color: red; font-weight: bold;">special summer offer</span> today!</p>
+        <p class="highlight">Stay tuned for local events and more.</p>
+    </div>
+
+    <!-- Main Content Section -->
+    <main>
+        <!-- Events Gallery Section -->
+        <section id="events">
+            <h2>Community Events Gallery</h2>
+            <table class="event-gallery">
+                <tr>
+                    <td><img src="event1.jpg" alt="Summer Festival" title="Summer Festival" class="event-image">
+                        <caption>Annual Summer Festival</caption>
+                    </td>
+                    <td><img src="event2.jpg" alt="Food Fair" title="Food Fair" class="event-image">
+                        <caption>Local Food Fair</caption>
+                    </td>
+                    <td><img src="event3.jpg" alt="Music Concert" title="Music Concert" class="event-image">
+                        <caption>Community Concert</caption>
+                    </td>
+                </tr>
+                <tr>
+                    <td><img src="event4.jpg" alt="Art Exhibition" title="Art Exhibition" class="event-image">
+                        <caption>Art Exhibition</caption>
+                    </td>
+                    <td><img src="event5.jpg" alt="Sports Day" title="Sports Day" class="event-image">
+                        <caption>Community Sports Day</caption>
+                    </td>
+                    <td><img src="event6.jpg" alt="Theater Show" title="Theater Show" class="event-image">
+                        <caption>Local Theater</caption>
+                    </td>
+                </tr>
+            </table>
+        </section>
+
+        <!-- Registration Form Section -->
+        <section id="contact">
+            <h2>Event Registration</h2>
+            <form id="registrationForm">
+                <div class="form-group">
+                    <label for="name">Name:</label>
+                    <input type="text" id="name" required autofocus placeholder="Your full name">
+                </div>
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" id="email" required placeholder="your@email.com">
+                </div>
+                <div class="form-group">
+                    <label for="phone">Phone:</label>
+                    <input type="tel" id="phone" placeholder="123-456-7890" onblur="validatePhone()">
+                </div>
+                <div class="form-group">
+                    <label for="eventDate">Event Date:</label>
+                    <input type="date" id="eventDate" required>
+                </div>
+                <div class="form-group">
+                    <label for="eventType">Event Type:</label>
+                    <select id="eventType" onchange="updateEventFee()">
+                        <option value="">Select an event</option>
+                        <option value="festival">Summer Festival</option>
+                        <option value="concert">Music Concert</option>
+                        <option value="sports">Sports Day</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea id="message" onkeyup="countCharacters()" rows="4"></textarea>
+                    <div id="charCount">Characters: 0</div>
+                </div>
+                <output id="formOutput"></output>
+                <button type="submit" onclick="handleSubmit(event)">Register</button>
+            </form>
+        </section>
+
+        <!-- Video Section -->
+        <section>
+            <h2>Event Promo</h2>
+            <video id="promoVideo" controls oncanplay="videoReady()">
+                <source src="promo.mp4" type="video/mp4">
+                Your browser does not support the video tag.
+            </video>
+        </section>
+
+        <!-- Location Section -->
+        <section>
+            <h2>Find Nearby Events</h2>
+            <div id="locationInfo">
+                <button onclick="findNearbyEvents()">Find Nearby Events</button>
+                <p id="locationDisplay"></p>
+            </div>
+        </section>
+
+        <!-- User Preferences Section -->
+        <section>
+            <h2>Preferences</h2>
+            <button onclick="clearPreferences()">Clear Preferences</button>
+        </section>
+    </main>
+
+    <!-- Footer Section -->
+    <footer>
+        <p>&copy; 2025 Local Community Event Portal</p>
+    </footer>
+
+    <script>
+        // Form validation and event handling
+        function validatePhone() {
+            const phone = document.getElementById('phone').value;
+            const phoneRegex = /^\d{3}-\d{3}-\d{4}$/;
+            if (!phoneRegex.test(phone)) {
+                alert('Please enter phone number in format: 123-456-7890');
+            }
+        }
+
+        function updateEventFee() {
+            const eventType = document.getElementById('eventType').value;
+            const fees = {
+                festival: '$20',
+                concert: '$30',
+                sports: '$15'
+            };
+            document.getElementById('formOutput').textContent = `Event fee: ${fees[eventType] || ''}`;
+
+            // Save preference to localStorage
+            localStorage.setItem('preferredEventType', eventType);
+        }
+
+        function countCharacters() {
+            const message = document.getElementById('message').value;
+            document.getElementById('charCount').textContent = `Characters: ${message.length}`;
+        } 
+        
+        function handleSubmit(event) {
+
+            alert('Form submitted successfully!');
+            event.preventDefault();
+            document.getElementById('name').value = '';
+            document.getElementById('email').value = '';
+            document.getElementById('phone').value = '';
+            document.getElementById('eventDate').value = '';
+            document.getElementById('eventType').value = '';
+            document.getElementById('message').value = '';
+            document.getElementById('charCount').textContent = 'Characters: 0';
+            document.getElementById('formOutput').textContent = 'Registration submitted successfully!';
+        }
+
+        // Image handling
+        document.querySelectorAll('.event-image').forEach(img => {
+            img.addEventListener('dblclick', function () {
+                this.style.transform = this.style.transform === 'scale(1.5)' ? 'scale(1)' : 'scale(1.5)';
+            });
+        });
+
+        // Video handling
+        function videoReady() {
+            console.log('Video is ready to play');
+        }
+
+        // Geolocation
+        function findNearbyEvents() {
+            if ("geolocation" in navigator) {
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: 5000,
+                    maximumAge: 0
+                };
+
+                navigator.geolocation.getCurrentPosition(
+                    position => {
+                        const { latitude, longitude } = position.coords;
+                        document.getElementById('locationDisplay').textContent =
+                            `Your location: ${latitude.toFixed(4)}, ${longitude.toFixed(4)}`;
+                        console.log(`Location found: ${latitude}, ${longitude}`);
+                    },
+                    error => {
+                        console.error('Error getting location:', error);
+                        document.getElementById('locationDisplay').textContent =
+                            'Unable to access location. Please enable location services.';
+                    },
+                    options
+                );
+            } else {
+                document.getElementById('locationDisplay').textContent =
+                    'Geolocation is not supported by your browser';
+            }
+        }
+
+        // Preferences handling
+        function clearPreferences() {
+            localStorage.clear();
+            sessionStorage.clear();
+            alert('All preferences have been cleared');
+        }
+
+        // Load saved preferences
+        window.addEventListener('load', () => {
+            const savedEventType = localStorage.getItem('preferredEventType');
+            if (savedEventType) {
+                document.getElementById('eventType').value = savedEventType;
+                updateEventFee();
+            }
+        });
+
+        // Warn before leaving with unsaved changes
+        window.addEventListener('beforeunload', (event) => {
+            if (document.getElementById('registrationForm').checkValidity() === false) {
+                event.preventDefault();
+                event.returnValue = '';
+            }
+        });
+    </script>
+</body>
+
+</html>
